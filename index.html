@@ -110,16 +110,51 @@ td:first-child{color:var(--muted);font-size:12px;width:36px}
 .ai50-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .ai50-header h2{font-size:22px;font-weight:700}
 .ai50-header .ai50-sub{font-size:12px;color:var(--muted)}
-.ai50-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.ai50-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;transition:box-shadow 0.2s,border-color 0.2s;cursor:default}
-.ai50-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
-.ai50-rank{font-size:28px;font-weight:700;color:var(--accent);float:left;margin-right:12px;line-height:1}
-.ai50-name{font-size:15px;font-weight:600;margin-bottom:2px}
-.ai50-desc{font-size:12px;color:var(--muted);line-height:1.5}
-.ai50-meta{display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
-.ai50-meta span{display:flex;align-items:center;gap:4px}
-.ai50-score{background:rgba(39,174,96,0.12);color:#1e8449;padding:2px 8px;border-radius:4px;font-weight:600;font-size:11px}
-.ai50-cat{background:rgba(41,128,185,0.1);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:11px}
+.ai50-split{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;height:620px;background:var(--surface)}
+.ai50-list{width:380px;min-width:320px;overflow-y:auto;border-right:1px solid var(--border);background:var(--bg)}
+.ai50-list::-webkit-scrollbar{width:5px}
+.ai50-list::-webkit-scrollbar-track{background:var(--bg)}
+.ai50-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.ai50-item{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.ai50-item:hover{background:rgba(26,82,118,0.05)}
+.ai50-item.active{background:var(--surface);border-left:3px solid var(--accent)}
+.ai50-item:last-child{border-bottom:none}
+.ai50-rank{font-size:20px;font-weight:700;color:var(--accent);min-width:32px;text-align:right;line-height:1.2}
+.ai50-item-info{flex:1;min-width:0}
+.ai50-name{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai50-item-sub{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.ai50-score{background:rgba(39,174,96,0.12);color:#1e8449;padding:1px 6px;border-radius:3px;font-weight:600;font-size:10px}
+.ai50-cat{background:rgba(41,128,185,0.1);color:var(--blue);padding:1px 6px;border-radius:3px;font-size:10px}
+.ai50-detail{flex:1;overflow-y:auto;padding:0}
+.ai50-detail::-webkit-scrollbar{width:5px}
+.ai50-detail::-webkit-scrollbar-track{background:var(--surface)}
+.ai50-detail::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.ai50-detail-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:14px;text-align:center;padding:40px}
+.ai50-detail-head{padding:24px 28px;border-bottom:1px solid var(--border)}
+.ai50-detail-head .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:22px;font-weight:700;border-radius:10px;margin-bottom:12px}
+.ai50-detail-head h3{font-size:24px;font-weight:700;margin-bottom:4px}
+.ai50-detail-head .cat-line{font-size:13px;color:var(--muted)}
+.ai50-detail-body{padding:24px 28px}
+.ai50-detail-desc{font-size:14px;line-height:1.7;color:#444;margin-bottom:20px}
+.ai50-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.ai50-stat{background:var(--bg);border-radius:8px;padding:14px 16px}
+.ai50-stat .label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px}
+.ai50-stat .value{font-size:18px;font-weight:600}
+.ai50-score-bar{margin-bottom:20px}
+.ai50-score-bar .bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.ai50-score-bar .bar-track{height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.ai50-score-bar .bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 0.6s ease}
+.ai50-peers{margin-top:20px}
+.ai50-peers h4{font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:10px}
+.ai50-peer{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-radius:6px;margin-bottom:6px;font-size:13px}
+.ai50-peer .peer-rank{font-weight:700;color:var(--accent);min-width:24px}
+.ai50-peer .peer-name{flex:1}
+.ai50-peer .peer-score{font-weight:600;font-size:12px;color:var(--muted)}
+@media(max-width:768px){
+  .ai50-split{flex-direction:column;height:auto}
+  .ai50-list{width:100%;max-height:300px;border-right:none;border-bottom:1px solid var(--border)}
+  .ai50-detail{min-height:400px}
+}
 
 footer{margin-top:40px;padding:20px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)}
 footer span{color:var(--accent)}
@@ -256,7 +291,12 @@ footer span{color:var(--accent)}
     </div>
     <div class="ai50-sub">50 companies &bull; 8 categories</div>
   </div>
-  <div class="ai50-grid" id="ai50Grid"></div>
+  <div class="ai50-split">
+    <div class="ai50-list" id="ai50List"></div>
+    <div class="ai50-detail" id="ai50Detail">
+      <div class="ai50-detail-empty">Click a company to view details</div>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -616,25 +656,74 @@ const AI50=[
 {r:50,n:"AI21 Labs",cat:"Foundation Models",desc:"Jamba models and enterprise AI. Hybrid SSM-transformer architecture innovation.",sc:46,hq:"Tel Aviv, Israel",val:"$4B"}
 ];
 
-(function renderAI50(){
-  const grid=document.getElementById("ai50Grid");
-  if(!grid)return;
-  grid.innerHTML=AI50.map(c=>`
-    <div class="ai50-card">
+let selectedAI50=null;
+function renderAI50List(){
+  const list=document.getElementById("ai50List");
+  if(!list)return;
+  list.innerHTML=AI50.map(c=>`
+    <div class="ai50-item${selectedAI50===c.r?' active':''}" onclick="selectAI50(${c.r})">
       <div class="ai50-rank">${c.r}</div>
-      <div>
+      <div class="ai50-item-info">
         <div class="ai50-name">${c.n}</div>
-        <div class="ai50-desc">${c.desc}</div>
-        <div class="ai50-meta">
-          <span class="ai50-score">${c.sc}/100</span>
+        <div class="ai50-item-sub">
+          <span class="ai50-score">${c.sc}</span>
           <span class="ai50-cat">${c.cat}</span>
-          <span>${c.hq}</span>
-          <span>${c.val}</span>
         </div>
       </div>
     </div>
   `).join("");
-})();
+}
+function selectAI50(rank){
+  selectedAI50=rank;
+  const c=AI50.find(x=>x.r===rank);
+  if(!c)return;
+  const peers=AI50.filter(x=>x.cat===c.cat&&x.r!==c.r).slice(0,4);
+  const det=document.getElementById("ai50Detail");
+  det.innerHTML=`
+    <div class="ai50-detail-head">
+      <div class="rank-badge">#${c.r}</div>
+      <h3>${c.n}</h3>
+      <div class="cat-line">${c.cat} &bull; ${c.hq}</div>
+    </div>
+    <div class="ai50-detail-body">
+      <div class="ai50-detail-desc">${c.desc}</div>
+      <div class="ai50-score-bar">
+        <div class="bar-label"><span>AI Score</span><span>${c.sc}/100</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${c.sc}%"></div></div>
+      </div>
+      <div class="ai50-stats">
+        <div class="ai50-stat">
+          <div class="label">Valuation</div>
+          <div class="value">${c.val}</div>
+        </div>
+        <div class="ai50-stat">
+          <div class="label">Headquarters</div>
+          <div class="value" style="font-size:14px">${c.hq}</div>
+        </div>
+        <div class="ai50-stat">
+          <div class="label">Category</div>
+          <div class="value" style="font-size:14px">${c.cat}</div>
+        </div>
+        <div class="ai50-stat">
+          <div class="label">Global Rank</div>
+          <div class="value">#${c.r} of 50</div>
+        </div>
+      </div>
+      ${peers.length?`<div class="ai50-peers">
+        <h4>Same Category</h4>
+        ${peers.map(p=>`<div class="ai50-peer">
+          <span class="peer-rank">#${p.r}</span>
+          <span class="peer-name">${p.n}</span>
+          <span class="peer-score">${p.sc}/100</span>
+        </div>`).join("")}
+      </div>`:""}
+    </div>
+  `;
+  document.querySelectorAll(".ai50-item").forEach(el=>el.classList.remove("active"));
+  document.querySelector(`.ai50-item:nth-child(${rank})`).classList.add("active");
+}
+renderAI50List();
+selectAI50(1);
 </script>
 </body>
 </html>
