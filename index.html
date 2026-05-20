@@ -106,6 +106,21 @@ td:first-child{color:var(--muted);font-size:12px;width:36px}
 .detail-bar-fill{height:100%;border-radius:4px;transition:width 0.5s}
 .detail-desc{margin-top:16px;padding:16px;background:var(--bg);border-radius:8px;font-size:13px;line-height:1.6;color:var(--muted)}
 
+.ai50-section{max-width:1440px;margin:40px auto 0;padding:0 24px}
+.ai50-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ai50-header h2{font-size:22px;font-weight:700}
+.ai50-header .ai50-sub{font-size:12px;color:var(--muted)}
+.ai50-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ai50-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;transition:box-shadow 0.2s,border-color 0.2s;cursor:default}
+.ai50-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.ai50-rank{font-size:28px;font-weight:700;color:var(--accent);float:left;margin-right:12px;line-height:1}
+.ai50-name{font-size:15px;font-weight:600;margin-bottom:2px}
+.ai50-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.ai50-meta{display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+.ai50-meta span{display:flex;align-items:center;gap:4px}
+.ai50-score{background:rgba(39,174,96,0.12);color:#1e8449;padding:2px 8px;border-radius:4px;font-weight:600;font-size:11px}
+.ai50-cat{background:rgba(41,128,185,0.1);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:11px}
+
 footer{margin-top:40px;padding:20px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)}
 footer span{color:var(--accent)}
 
@@ -231,6 +246,17 @@ footer span{color:var(--accent)}
     </div>
     <div class="modal-body" id="modalBody"></div>
   </div>
+</div>
+
+<div class="ai50-section" id="ai50section">
+  <div class="ai50-header">
+    <div>
+      <h2>AI 50 &mdash; Top Artificial Intelligence Companies</h2>
+      <p style="font-size:13px;color:var(--muted);margin-top:4px">Ranked by innovation score, market impact, and technology readiness. Updated May 2026.</p>
+    </div>
+    <div class="ai50-sub">50 companies &bull; 8 categories</div>
+  </div>
+  <div class="ai50-grid" id="ai50Grid"></div>
 </div>
 
 <footer>
@@ -536,6 +562,79 @@ function updateClock(){
 setInterval(updateClock,1000);updateClock();
 
 filtered=[...DATA];render();
+
+const AI50=[
+{r:1,n:"NVIDIA",cat:"Semiconductors",desc:"GPU computing platform powering AI training and inference at scale. Dominant in data center AI accelerators.",sc:98,hq:"Santa Clara, CA",val:"$3.2T"},
+{r:2,n:"OpenAI",cat:"Foundation Models",desc:"Creator of GPT series and ChatGPT. Pioneering large language models and multimodal AI systems.",sc:96,hq:"San Francisco, CA",val:"$150B"},
+{r:3,n:"Microsoft",cat:"Cloud & Enterprise AI",desc:"Azure AI platform, Copilot integration across Office suite, and strategic AI partnerships.",sc:95,hq:"Redmond, WA",val:"$3.1T"},
+{r:4,n:"Google DeepMind",cat:"Research & Cloud",desc:"Gemini models, AlphaFold protein prediction, and Google Cloud AI infrastructure.",sc:94,hq:"London, UK",val:"$2.0T"},
+{r:5,n:"Anthropic",cat:"Foundation Models",desc:"Claude AI assistant and Constitutional AI research. Focus on AI safety and reliability.",sc:93,hq:"San Francisco, CA",val:"$60B"},
+{r:6,n:"Meta AI",cat:"Open Source AI",desc:"LLaMA open-source models, AI-powered social platforms, and metaverse research.",sc:91,hq:"Menlo Park, CA",val:"$1.4T"},
+{r:7,n:"Tesla",cat:"Autonomous Systems",desc:"Full Self-Driving neural networks, Optimus humanoid robot, and Dojo training supercomputer.",sc:90,hq:"Austin, TX",val:"$800B"},
+{r:8,n:"AMD",cat:"Semiconductors",desc:"MI300X AI accelerators challenging NVIDIA. Growing data center AI chip market share.",sc:88,hq:"Santa Clara, CA",val:"$220B"},
+{r:9,n:"Amazon AWS",cat:"Cloud & Enterprise AI",desc:"Bedrock AI platform, custom Trainium chips, and Alexa AI ecosystem.",sc:87,hq:"Seattle, WA",val:"$2.0T"},
+{r:10,n:"Apple",cat:"On-Device AI",desc:"Apple Intelligence, Neural Engine, and privacy-focused on-device machine learning.",sc:86,hq:"Cupertino, CA",val:"$3.4T"},
+{r:11,n:"Broadcom",cat:"Semiconductors",desc:"Custom AI accelerator chips (TPU) for hyperscalers. Networking silicon for AI clusters.",sc:85,hq:"Palo Alto, CA",val:"$820B"},
+{r:12,n:"xAI",cat:"Foundation Models",desc:"Grok AI models integrated with X platform. Real-time knowledge and reasoning focus.",sc:84,hq:"Austin, TX",val:"$50B"},
+{r:13,n:"Samsung",cat:"Semiconductors",desc:"HBM memory for AI chips, on-device AI for Galaxy phones, and foundry services.",sc:83,hq:"Seoul, South Korea",val:"$380B"},
+{r:14,n:"Mistral AI",cat:"Foundation Models",desc:"European open-weight AI models. Efficient architectures for enterprise deployment.",sc:82,hq:"Paris, France",val:"$6B"},
+{r:15,n:"Databricks",cat:"Data & MLOps",desc:"Lakehouse AI platform, Mosaic ML acquisition, and enterprise AI infrastructure.",sc:81,hq:"San Francisco, CA",val:"$62B"},
+{r:16,n:"Palantir",cat:"Enterprise AI",desc:"AIP platform for defense and enterprise AI deployment. Ontology-based AI applications.",sc:80,hq:"Denver, CO",val:"$150B"},
+{r:17,n:"TSMC",cat:"Semiconductors",desc:"Manufacturing all leading AI chips. Advanced 3nm and 2nm process for AI accelerators.",sc:79,hq:"Hsinchu, Taiwan",val:"$900B"},
+{r:18,n:"Snowflake",cat:"Data & MLOps",desc:"Cortex AI platform for enterprise data analytics and LLM-powered data applications.",sc:78,hq:"Bozeman, MT",val:"$55B"},
+{r:19,n:"Hugging Face",cat:"Open Source AI",desc:"Leading open-source AI model hub. Transformers library powering research and production.",sc:77,hq:"New York, NY",val:"$4.5B"},
+{r:20,n:"Scale AI",cat:"Data & MLOps",desc:"AI training data platform. Data labeling and RLHF services for frontier model developers.",sc:76,hq:"San Francisco, CA",val:"$14B"},
+{r:21,n:"Cohere",cat:"Foundation Models",desc:"Enterprise-focused LLMs with RAG capabilities. Multilingual AI for business.",sc:75,hq:"Toronto, Canada",val:"$5.5B"},
+{r:22,n:"Intel",cat:"Semiconductors",desc:"Gaudi AI accelerators and Xeon processors with AI acceleration. Foundry ambitions.",sc:74,hq:"Santa Clara, CA",val:"$110B"},
+{r:23,n:"ServiceNow",cat:"Enterprise AI",desc:"Now Assist AI copilot for IT, HR, and customer service workflows.",sc:73,hq:"Santa Clara, CA",val:"$190B"},
+{r:24,n:"Salesforce",cat:"Enterprise AI",desc:"Einstein AI platform, Agentforce autonomous AI agents for CRM and business processes.",sc:72,hq:"San Francisco, CA",val:"$270B"},
+{r:25,n:"Cerebras Systems",cat:"Semiconductors",desc:"Wafer-scale AI chips. CS-3 with 4 trillion transistors for LLM training and inference.",sc:71,hq:"Sunnyvale, CA",val:"$4B"},
+{r:26,n:"Stability AI",cat:"Generative AI",desc:"Stable Diffusion image generation. Open-source approach to generative AI models.",sc:70,hq:"London, UK",val:"$1B"},
+{r:27,n:"Perplexity",cat:"AI Search",desc:"AI-native search engine with real-time answers and citations. Answer engine paradigm.",sc:69,hq:"San Francisco, CA",val:"$9B"},
+{r:28,n:"Groq",cat:"Semiconductors",desc:"LPU inference chips delivering ultra-fast AI response times. Purpose-built for LLMs.",sc:68,hq:"Mountain View, CA",val:"$2.8B"},
+{r:29,n:"Baidu",cat:"Foundation Models",desc:"ERNIE LLM and autonomous driving. Leading Chinese AI research and applications.",sc:67,hq:"Beijing, China",val:"$40B"},
+{r:30,n:"ByteDance",cat:"AI Applications",desc:"TikTok recommendation AI, Doubao LLM, and AI-powered content creation tools.",sc:66,hq:"Beijing, China",val:"$220B"},
+{r:31,n:"SAP",cat:"Enterprise AI",desc:"Joule AI copilot across ERP suite. Business AI for enterprise resource planning.",sc:65,hq:"Walldorf, Germany",val:"$280B"},
+{r:32,n:"Runway",cat:"Generative AI",desc:"AI video generation and editing. Gen-3 model for cinematic AI content creation.",sc:64,hq:"New York, NY",val:"$4B"},
+{r:33,n:"Alibaba Cloud",cat:"Cloud & Enterprise AI",desc:"Qwen LLM series and cloud AI infrastructure. Leading Asian cloud AI provider.",sc:63,hq:"Hangzhou, China",val:"$35B"},
+{r:34,n:"AI2ORBIT Co.",cat:"Network Intelligence",desc:"NetSwitch benchmark platform, thermal-aware network optimization, and financial ratings systems.",sc:62,hq:"Helsinki, Finland",val:"Private"},
+{r:35,n:"Anduril",cat:"Defense AI",desc:"Lattice AI platform for defense. Autonomous drones and AI-powered military systems.",sc:61,hq:"Costa Mesa, CA",val:"$14B"},
+{r:36,n:"UiPath",cat:"AI Automation",desc:"Robotic process automation with AI. Intelligent document processing and workflow AI.",sc:60,hq:"New York, NY",val:"$12B"},
+{r:37,n:"CrowdStrike",cat:"Cybersecurity AI",desc:"Charlotte AI for cybersecurity threat detection. AI-native endpoint protection.",sc:59,hq:"Austin, TX",val:"$85B"},
+{r:38,n:"Palo Alto Networks",cat:"Cybersecurity AI",desc:"Cortex AI for SOC automation. Precision AI across network and cloud security.",sc:58,hq:"Santa Clara, CA",val:"$120B"},
+{r:39,n:"Arm Holdings",cat:"Semiconductors",desc:"AI-optimized CPU architectures powering mobile and edge AI. Compute platform for AI.",sc:57,hq:"Cambridge, UK",val:"$150B"},
+{r:40,n:"C3.ai",cat:"Enterprise AI",desc:"Enterprise AI platform for predictive maintenance, fraud detection, and supply chain.",sc:56,hq:"Redwood City, CA",val:"$4B"},
+{r:41,n:"Tempus AI",cat:"Healthcare AI",desc:"AI-driven precision medicine. Clinical and molecular data analysis for oncology.",sc:55,hq:"Chicago, IL",val:"$6B"},
+{r:42,n:"Recursion",cat:"Healthcare AI",desc:"AI-powered drug discovery. Biological data maps for therapeutic development.",sc:54,hq:"Salt Lake City, UT",val:"$3B"},
+{r:43,n:"SoundHound AI",cat:"Voice AI",desc:"Conversational AI for automotive, restaurants, and IoT. Voice-first AI platform.",sc:53,hq:"Santa Clara, CA",val:"$5B"},
+{r:44,n:"Roblox",cat:"AI Applications",desc:"Generative AI for 3D world creation. AI-powered content tools for user-generated games.",sc:52,hq:"San Mateo, CA",val:"$35B"},
+{r:45,n:"Mobileye",cat:"Autonomous Systems",desc:"EyeQ AI chips for autonomous driving. ADAS technology powering 50+ automakers.",sc:51,hq:"Jerusalem, Israel",val:"$15B"},
+{r:46,n:"Nuro",cat:"Autonomous Systems",desc:"Autonomous delivery vehicles. AI-powered last-mile delivery robots.",sc:50,hq:"Mountain View, CA",val:"$4B"},
+{r:47,n:"Shield AI",cat:"Defense AI",desc:"Hivemind AI pilot for autonomous aircraft. AI for military aviation operations.",sc:49,hq:"San Diego, CA",val:"$5B"},
+{r:48,n:"Cradle",cat:"Healthcare AI",desc:"AI protein engineering platform. Generative AI for biological design.",sc:48,hq:"Zurich, Switzerland",val:"$1B"},
+{r:49,n:"Aleph Alpha",cat:"Foundation Models",desc:"European sovereign AI. Luminous models for government and enterprise with data sovereignty.",sc:47,hq:"Heidelberg, Germany",val:"$2B"},
+{r:50,n:"AI21 Labs",cat:"Foundation Models",desc:"Jamba models and enterprise AI. Hybrid SSM-transformer architecture innovation.",sc:46,hq:"Tel Aviv, Israel",val:"$4B"}
+];
+
+(function renderAI50(){
+  const grid=document.getElementById("ai50Grid");
+  if(!grid)return;
+  grid.innerHTML=AI50.map(c=>`
+    <div class="ai50-card">
+      <div class="ai50-rank">${c.r}</div>
+      <div>
+        <div class="ai50-name">${c.n}</div>
+        <div class="ai50-desc">${c.desc}</div>
+        <div class="ai50-meta">
+          <span class="ai50-score">${c.sc}/100</span>
+          <span class="ai50-cat">${c.cat}</span>
+          <span>${c.hq}</span>
+          <span>${c.val}</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+})();
 </script>
 </body>
 </html>
