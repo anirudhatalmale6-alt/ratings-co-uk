@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratings.co.uk - ratings.co.uk</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0e17;--surface:#111827;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;
+--accent:#c9a84c;--accent2:#a88832;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;
+--font:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+a{color:var(--accent);text-decoration:none}
+
+.footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:10px}
+.footer-links a{font-size:12px;color:var(--muted);transition:color 0.2s}
+.footer-links a:hover{color:var(--accent)}
+
+header{background:linear-gradient(135deg,#0f1520 0%,#1a1f2e 100%);border-bottom:1px solid var(--border);padding:0 24px}
+.header-top{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:1440px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0e17;font-size:16px}
+.logo-text{font-size:18px;font-weight:600;letter-spacing:0.5px}
+.logo-text span{color:var(--accent)}
+.header-meta{display:flex;align-items:center;gap:20px;font-size:12px;color:var(--muted)}
+.header-meta .live{color:var(--green);display:flex;align-items:center;gap:5px}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+nav{max-width:1440px;margin:0 auto;display:flex;gap:24px;height:40px;align-items:center}
+nav a{color:var(--muted);font-size:13px;font-weight:500;padding:8px 0;border-bottom:2px solid transparent;transition:all 0.2s;cursor:pointer}
+nav a:hover,nav a.active{color:var(--text);border-bottom-color:var(--accent)}
+
+.container{max-width:1440px;margin:0 auto;padding:20px 24px}
+
+.summary-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:600}
+.stat-value.up{color:var(--green)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+.controls{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:200px;max-width:340px}
+.search-box input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px 8px 34px;color:var(--text);font-size:13px;outline:none;transition:border-color 0.2s}
+.search-box input:focus{border-color:var(--accent)}
+.search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.filter-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--muted);font-size:12px;cursor:pointer;transition:all 0.2s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--text)}
+.sort-select{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:13px;cursor:pointer;outline:none}
+.results-count{margin-left:auto;font-size:12px;color:var(--muted)}
+
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:#0d1117;padding:9px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
+thead th:hover{color:var(--text)}
+thead th.sorted-asc::after{content:" \25B2";font-size:9px}
+thead th.sorted-desc::after{content:" \25BC";font-size:9px}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer}
+tbody tr:hover{background:rgba(201,168,76,0.06)}
+tbody tr:last-child{border-bottom:none}
+td{padding:9px 12px;font-size:13px;white-space:nowrap}
+td:first-child{color:var(--muted);font-size:12px;width:36px}
+.ticker{font-weight:600;color:var(--accent);font-family:'Consolas','SF Mono',monospace;font-size:13px}
+.corp-name{color:var(--text);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.grade{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;font-weight:700;font-size:13px}
+.grade-a{background:rgba(34,197,94,0.2);color:#4ade80}
+.grade-b{background:rgba(59,130,246,0.2);color:#60a5fa}
+.grade-c{background:rgba(234,179,8,0.2);color:#facc15}
+.grade-d{background:rgba(239,68,68,0.2);color:#f87171}
+.num-col{text-align:right;font-family:'Consolas','SF Mono',monospace;font-size:13px}
+.exchange-tag{background:rgba(59,130,246,0.12);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.type-tag{font-size:11px;color:var(--muted)}
+.auth-ok{color:var(--green);font-size:11px}
+.auth-pend{color:#facc15;font-size:11px}
+.auth-rev{color:var(--red);font-size:11px}
+
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px}
+.pagination button{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:6px 12px;color:var(--muted);font-size:12px;cursor:pointer;transition:all 0.15s}
+.pagination button:hover{border-color:var(--accent);color:var(--text)}
+.pagination button.active{background:var(--accent);color:#0a0e17;border-color:var(--accent);font-weight:600}
+.pagination button:disabled{opacity:0.3;cursor:default}
+
+.scroll-table{max-height:calc(100vh - 340px);overflow-y:auto}
+.scroll-table::-webkit-scrollbar{width:6px}
+.scroll-table::-webkit-scrollbar-track{background:var(--surface)}
+.scroll-table::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Detail Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100;justify-content:center;align-items:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:90%;max-width:640px;max-height:85vh;overflow-y:auto;padding:0}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border)}
+.modal-head h2{font-size:18px;font-weight:600}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.modal-body{padding:24px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-item{padding:12px;background:var(--bg);border-radius:8px}
+.detail-item .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.detail-item .value{font-size:16px;font-weight:600}
+.detail-full{grid-column:1/-1}
+.detail-bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:6px}
+.detail-bar-fill{height:100%;border-radius:4px;transition:width 0.5s}
+.detail-desc{margin-top:16px;padding:16px;background:var(--bg);border-radius:8px;font-size:13px;line-height:1.6;color:var(--muted)}
+
+footer{margin-top:40px;padding:20px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)}
+footer span{color:var(--accent)}
+
+@media(max-width:768px){
+  .summary-bar{grid-template-columns:repeat(2,1fr)}
+  .controls{flex-direction:column;align-items:stretch}
+  .search-box{max-width:100%}
+  .results-count{margin-left:0}
+  td,th{padding:7px 8px;font-size:11px}
+  .header-meta{display:none}
+  .detail-grid{grid-template-columns:1fr}
+  .modal{width:95%}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="header-top">
+  <div class="logo">
+    <div class="logo-mark">R</div>
+    <div class="logo-text"><span>Ratings</span>.co.uk</div>
+  </div>
+  <div class="header-meta">
+    <div class="live"><span class="live-dot"></span> Live Market Data</div>
+    <div id="clock"></div>
+    <div>ratings.co.uk</div>
+  </div>
+</div>
+<nav>
+  <a class="active" onclick="showView('listings')">Listings</a>
+  <a onclick="showView('listings')">Indices</a>
+  <a onclick="showView('listings')">Analysis</a>
+  <a onclick="showView('listings')">Sectors</a>
+  <a onclick="showView('listings')">About</a>
+</nav>
+</header>
+
+<div class="container">
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total Listings</div>
+      <div class="stat-value" id="totalListings">0</div>
+      <div class="stat-sub">Authorized entities</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Rating</div>
+      <div class="stat-value up" id="avgRating">0.00</div>
+      <div class="stat-sub">Weighted composite</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Volume</div>
+      <div class="stat-value" id="totalVolume">0</div>
+      <div class="stat-sub">Parts traded</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Exchanges</div>
+      <div class="stat-value" id="totalExchanges">0</div>
+      <div class="stat-sub">Active markets</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Authorized</div>
+      <div class="stat-value up" id="totalAuth">0</div>
+      <div class="stat-sub">FMA compliant</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search ticker, company, exchange...">
+    </div>
+    <button class="filter-btn active" data-exchange="ALL">All</button>
+    <button class="filter-btn" data-exchange="NYSE">NYSE</button>
+    <button class="filter-btn" data-exchange="NASDAQ">NASDAQ</button>
+    <button class="filter-btn" data-exchange="LSE">LSE</button>
+    <button class="filter-btn" data-exchange="OMXH">OMXH</button>
+    <button class="filter-btn" data-exchange="XETRA">XETRA</button>
+    <button class="filter-btn" data-exchange="Euronext">CAC</button>
+    <button class="filter-btn" data-exchange="HKEX">HKEX</button>
+    <button class="filter-btn" data-exchange="TSE">TSE</button>
+    <select class="sort-select" id="sortSelect">
+      <option value="num-asc">Sort: # Asc</option>
+      <option value="ticker-asc">Ticker A-Z</option>
+      <option value="grade-asc">Grade A-D</option>
+      <option value="rating1-desc">Math Rating High</option>
+      <option value="rating2-asc">Academic Low</option>
+      <option value="price-desc">Price High-Low</option>
+      <option value="price-asc">Price Low-High</option>
+    </select>
+    <div class="results-count" id="resultsCount"></div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="scroll-table">
+      <table>
+        <thead>
+          <tr>
+            <th data-sort="num">#</th>
+            <th data-sort="ticker">Ticker</th>
+            <th data-sort="name">Corporation</th>
+            <th data-sort="type">Type</th>
+            <th data-sort="grade">Rating</th>
+            <th data-sort="rating1">Math</th>
+            <th data-sort="rating2">Academic</th>
+            <th data-sort="parts">Parts</th>
+            <th data-sort="price">Price</th>
+            <th data-sort="exchange">Exchange</th>
+            <th data-sort="auth">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle"></h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="terms.html">Terms of Service</a>
+    <a href="eula.html">EULA</a>
+    <a href="nis2.html">NIS2</a>
+    <a href="gdpr.html">GDPR</a>
+  </div>
+  &copy; 2026 <span>Ratings.co.uk</span> &mdash; ratings.co.uk &mdash; Market data for informational purposes only. AI2ORBIT Co.
+</footer>
+
+<script>
+const TYPES=["Equity","Investment Bank","Insurance","Technology","Energy","Pharmaceutical","Consumer","Industrial","Financial Services","Telecommunications","Mining","Automotive","Retail","Conglomerate","REIT"];
+const AUTH=["Authorized","Authorized","Authorized","Authorized","Authorized","Authorized","Authorized","Authorized","Pending Review","Authorized","Authorized","Authorized"];
+function rGrade(r){return r>=4.5?"A":r>=4.0?"B":r>=3.5?"C":"D"}
+function rClass(g){return"grade-"+g.toLowerCase()}
+
+const DATA=[
+// NYSE
+{t:"A",n:"Agilent Technologies Inc.",r1:4.2,r2:0.029,p:30100000,pr:110.57,ex:"NYSE",tp:"Technology",au:"Authorized",sec:"Healthcare & Diagnostics",ceo:"Padraig McDonnell",hq:"Santa Clara, CA",yr:1999},
+{t:"JPM",n:"JPMorgan Chase & Co.",r1:4.6,r2:0.022,p:293100000,pr:198.40,ex:"NYSE",tp:"Investment Bank",au:"Authorized",sec:"Financial Services",ceo:"Jamie Dimon",hq:"New York, NY",yr:1799},
+{t:"V",n:"Visa Inc.",r1:4.5,r2:0.024,p:166200000,pr:282.55,ex:"NYSE",tp:"Financial Services",au:"Authorized",sec:"Payments",ceo:"Ryan McInerney",hq:"San Francisco, CA",yr:1958},
+{t:"JNJ",n:"Johnson & Johnson",r1:4.1,r2:0.034,p:241500000,pr:155.20,ex:"NYSE",tp:"Pharmaceutical",au:"Authorized",sec:"Healthcare",ceo:"Joaquin Duato",hq:"New Brunswick, NJ",yr:1886},
+{t:"WMT",n:"Walmart Inc.",r1:4.0,r2:0.042,p:269800000,pr:168.90,ex:"NYSE",tp:"Retail",au:"Authorized",sec:"Consumer Retail",ceo:"Doug McMillon",hq:"Bentonville, AR",yr:1962},
+{t:"XOM",n:"Exxon Mobil Corporation",r1:3.9,r2:0.045,p:421700000,pr:105.30,ex:"NYSE",tp:"Energy",au:"Authorized",sec:"Oil & Gas",ceo:"Darren Woods",hq:"Spring, TX",yr:1999},
+{t:"UNH",n:"UnitedHealth Group Inc.",r1:4.3,r2:0.030,p:93400000,pr:512.80,ex:"NYSE",tp:"Insurance",au:"Authorized",sec:"Healthcare",ceo:"Andrew Witty",hq:"Minnetonka, MN",yr:1977},
+{t:"PG",n:"Procter & Gamble Co.",r1:4.2,r2:0.027,p:236200000,pr:161.45,ex:"NYSE",tp:"Consumer",au:"Authorized",sec:"Consumer Goods",ceo:"Jon Moeller",hq:"Cincinnati, OH",yr:1837},
+{t:"TSM",n:"Taiwan Semiconductor Mfg.",r1:4.7,r2:0.020,p:518900000,pr:168.75,ex:"NYSE",tp:"Technology",au:"Authorized",sec:"Semiconductors",ceo:"C.C. Wei",hq:"Hsinchu, Taiwan",yr:1987},
+{t:"CRM",n:"Salesforce Inc.",r1:4.1,r2:0.034,p:97200000,pr:268.90,ex:"NYSE",tp:"Technology",au:"Authorized",sec:"Cloud Software",ceo:"Marc Benioff",hq:"San Francisco, CA",yr:1999},
+{t:"DIS",n:"The Walt Disney Company",r1:3.6,r2:0.050,p:182400000,pr:112.30,ex:"NYSE",tp:"Consumer",au:"Authorized",sec:"Entertainment",ceo:"Bob Iger",hq:"Burbank, CA",yr:1923},
+{t:"BA",n:"The Boeing Company",r1:2.8,r2:0.078,p:59700000,pr:178.90,ex:"NYSE",tp:"Industrial",au:"Pending Review",sec:"Aerospace & Defense",ceo:"Kelly Ortberg",hq:"Arlington, VA",yr:1916},
+{t:"GS",n:"Goldman Sachs Group Inc.",r1:4.4,r2:0.025,p:34500000,pr:468.30,ex:"NYSE",tp:"Investment Bank",au:"Authorized",sec:"Financial Services",ceo:"David Solomon",hq:"New York, NY",yr:1869},
+{t:"MS",n:"Morgan Stanley",r1:4.0,r2:0.033,p:163800000,pr:98.40,ex:"NYSE",tp:"Investment Bank",au:"Authorized",sec:"Financial Services",ceo:"Ted Pick",hq:"New York, NY",yr:1935},
+{t:"KO",n:"The Coca-Cola Company",r1:4.3,r2:0.028,p:431500000,pr:62.40,ex:"NYSE",tp:"Consumer",au:"Authorized",sec:"Beverages",ceo:"James Quincey",hq:"Atlanta, GA",yr:1892},
+{t:"BRK.B",n:"Berkshire Hathaway Inc.",r1:4.8,r2:0.018,p:131400000,pr:418.25,ex:"NYSE",tp:"Conglomerate",au:"Authorized",sec:"Diversified",ceo:"Warren Buffett",hq:"Omaha, NE",yr:1839},
+// NASDAQ
+{t:"AAPL",n:"Apple Inc.",r1:4.7,r2:0.021,p:1540000000,pr:198.45,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Consumer Electronics",ceo:"Tim Cook",hq:"Cupertino, CA",yr:1976},
+{t:"MSFT",n:"Microsoft Corporation",r1:4.8,r2:0.019,p:745000000,pr:425.52,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Software",ceo:"Satya Nadella",hq:"Redmond, WA",yr:1975},
+{t:"GOOGL",n:"Alphabet Inc.",r1:4.5,r2:0.028,p:612000000,pr:178.90,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Internet Services",ceo:"Sundar Pichai",hq:"Mountain View, CA",yr:1998},
+{t:"AMZN",n:"Amazon.com Inc.",r1:4.3,r2:0.033,p:520100000,pr:193.25,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"E-Commerce & Cloud",ceo:"Andy Jassy",hq:"Seattle, WA",yr:1994},
+{t:"NVDA",n:"NVIDIA Corporation",r1:4.9,r2:0.015,p:246000000,pr:924.60,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Semiconductors",ceo:"Jensen Huang",hq:"Santa Clara, CA",yr:1993},
+{t:"META",n:"Meta Platforms Inc.",r1:4.2,r2:0.032,p:256300000,pr:502.30,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Social Media",ceo:"Mark Zuckerberg",hq:"Menlo Park, CA",yr:2004},
+{t:"TSLA",n:"Tesla Inc.",r1:3.8,r2:0.048,p:318700000,pr:427.10,ex:"NASDAQ",tp:"Automotive",au:"Authorized",sec:"Electric Vehicles",ceo:"Elon Musk",hq:"Austin, TX",yr:2003},
+{t:"NFLX",n:"Netflix Inc.",r1:4.4,r2:0.026,p:43100000,pr:628.70,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Streaming",ceo:"Ted Sarandos",hq:"Los Gatos, CA",yr:1997},
+{t:"INTC",n:"Intel Corporation",r1:2.9,r2:0.071,p:415200000,pr:31.50,ex:"NASDAQ",tp:"Technology",au:"Pending Review",sec:"Semiconductors",ceo:"Lip-Bu Tan",hq:"Santa Clara, CA",yr:1968},
+{t:"AMD",n:"Advanced Micro Devices",r1:4.3,r2:0.029,p:161800000,pr:164.25,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Semiconductors",ceo:"Lisa Su",hq:"Santa Clara, CA",yr:1969},
+{t:"AVGO",n:"Broadcom Inc.",r1:4.5,r2:0.023,p:46500000,pr:1320.40,ex:"NASDAQ",tp:"Technology",au:"Authorized",sec:"Semiconductors",ceo:"Hock Tan",hq:"Palo Alto, CA",yr:1961},
+// LSE
+{t:"SHEL",n:"Shell plc",r1:4.0,r2:0.039,p:380200000,pr:31.25,ex:"LSE",tp:"Energy",au:"Authorized",sec:"Oil & Gas",ceo:"Wael Sawan",hq:"London, UK",yr:1907},
+{t:"HSBA",n:"HSBC Holdings plc",r1:3.7,r2:0.048,p:1982000000,pr:7.42,ex:"LSE",tp:"Investment Bank",au:"Authorized",sec:"Banking",ceo:"Georges Elhedery",hq:"London, UK",yr:1865},
+{t:"AZN",n:"AstraZeneca plc",r1:4.6,r2:0.021,p:131500000,pr:122.60,ex:"LSE",tp:"Pharmaceutical",au:"Authorized",sec:"Biopharmaceuticals",ceo:"Pascal Soriot",hq:"Cambridge, UK",yr:1999},
+{t:"ULVR",n:"Unilever plc",r1:4.1,r2:0.035,p:254100000,pr:44.85,ex:"LSE",tp:"Consumer",au:"Authorized",sec:"Consumer Goods",ceo:"Hein Schumacher",hq:"London, UK",yr:1929},
+{t:"BP",n:"BP plc",r1:3.5,r2:0.052,p:1940000000,pr:4.95,ex:"LSE",tp:"Energy",au:"Authorized",sec:"Oil & Gas",ceo:"Murray Auchincloss",hq:"London, UK",yr:1909},
+{t:"GLEN",n:"Glencore plc",r1:3.4,r2:0.058,p:1320000000,pr:4.22,ex:"LSE",tp:"Mining",au:"Authorized",sec:"Commodities",ceo:"Gary Nagle",hq:"Baar, Switzerland",yr:1974},
+{t:"RIO",n:"Rio Tinto Group",r1:3.9,r2:0.040,p:162800000,pr:58.30,ex:"LSE",tp:"Mining",au:"Authorized",sec:"Mining",ceo:"Jakob Stausholm",hq:"London, UK",yr:1873},
+{t:"GSK",n:"GSK plc",r1:4.0,r2:0.036,p:410800000,pr:16.52,ex:"LSE",tp:"Pharmaceutical",au:"Authorized",sec:"Pharmaceuticals",ceo:"Emma Walmsley",hq:"London, UK",yr:2000},
+// OMXH (Helsinki)
+{t:"NOKIA",n:"Nokia Corporation",r1:4.0,r2:0.036,p:562400000,pr:4.18,ex:"OMXH",tp:"Technology",au:"Authorized",sec:"Telecommunications",ceo:"Pekka Lundmark",hq:"Espoo, Finland",yr:1865},
+{t:"FORTUM",n:"Fortum Oyj",r1:3.8,r2:0.044,p:88900000,pr:14.52,ex:"OMXH",tp:"Energy",au:"Authorized",sec:"Utilities",ceo:"Markus Rauramo",hq:"Espoo, Finland",yr:1998},
+{t:"SAMPO",n:"Sampo Oyj",r1:4.3,r2:0.026,p:55300000,pr:42.90,ex:"OMXH",tp:"Insurance",au:"Authorized",sec:"Insurance",ceo:"Torbjorn Magnusson",hq:"Helsinki, Finland",yr:2001},
+{t:"NESTE",n:"Neste Corporation",r1:4.1,r2:0.032,p:76800000,pr:28.65,ex:"OMXH",tp:"Energy",au:"Authorized",sec:"Renewable Fuels",ceo:"Matti Lehmus",hq:"Espoo, Finland",yr:1948},
+{t:"UPM",n:"UPM-Kymmene Oyj",r1:3.7,r2:0.047,p:53200000,pr:31.20,ex:"OMXH",tp:"Industrial",au:"Authorized",sec:"Forest Products",ceo:"Jussi Pesonen",hq:"Helsinki, Finland",yr:1996},
+{t:"KNEBV",n:"Kone Oyj",r1:4.4,r2:0.023,p:52500000,pr:52.80,ex:"OMXH",tp:"Industrial",au:"Authorized",sec:"Elevators & Escalators",ceo:"Henrik Ehrnrooth",hq:"Helsinki, Finland",yr:1910},
+{t:"STERV",n:"Stora Enso Oyj",r1:3.3,r2:0.061,p:78900000,pr:12.45,ex:"OMXH",tp:"Industrial",au:"Authorized",sec:"Packaging",ceo:"Hans Sohlstrom",hq:"Helsinki, Finland",yr:1998},
+{t:"WRTBV",n:"Wartsila Oyj Abp",r1:3.9,r2:0.037,p:58400000,pr:18.70,ex:"OMXH",tp:"Industrial",au:"Authorized",sec:"Marine & Energy",ceo:"Hakan Agnevall",hq:"Helsinki, Finland",yr:1834},
+{t:"ELISA",n:"Elisa Oyj",r1:4.2,r2:0.027,p:16400000,pr:48.50,ex:"OMXH",tp:"Telecommunications",au:"Authorized",sec:"Telecom",ceo:"Veli-Matti Mattila",hq:"Helsinki, Finland",yr:1882},
+// XETRA (DAX)
+{t:"SAP",n:"SAP SE",r1:4.5,r2:0.024,p:122600000,pr:192.40,ex:"XETRA",tp:"Technology",au:"Authorized",sec:"Enterprise Software",ceo:"Christian Klein",hq:"Walldorf, Germany",yr:1972},
+{t:"SIE",n:"Siemens AG",r1:4.2,r2:0.030,p:80000000,pr:178.90,ex:"XETRA",tp:"Industrial",au:"Authorized",sec:"Conglomerate",ceo:"Roland Busch",hq:"Munich, Germany",yr:1847},
+{t:"ALV",n:"Allianz SE",r1:4.1,r2:0.033,p:41200000,pr:262.30,ex:"XETRA",tp:"Insurance",au:"Authorized",sec:"Insurance",ceo:"Oliver Bate",hq:"Munich, Germany",yr:1890},
+{t:"DTE",n:"Deutsche Telekom AG",r1:3.8,r2:0.043,p:498600000,pr:23.55,ex:"XETRA",tp:"Telecommunications",au:"Authorized",sec:"Telecom",ceo:"Tim Hottges",hq:"Bonn, Germany",yr:1995},
+{t:"BAS",n:"BASF SE",r1:3.4,r2:0.056,p:91800000,pr:45.60,ex:"XETRA",tp:"Industrial",au:"Authorized",sec:"Chemicals",ceo:"Markus Kamieth",hq:"Ludwigshafen, Germany",yr:1865},
+{t:"MBG",n:"Mercedes-Benz Group AG",r1:3.6,r2:0.049,p:106700000,pr:68.40,ex:"XETRA",tp:"Automotive",au:"Authorized",sec:"Automotive",ceo:"Ola Kallenius",hq:"Stuttgart, Germany",yr:1926},
+{t:"BMW",n:"Bayerische Motoren Werke AG",r1:3.7,r2:0.046,p:60200000,pr:94.80,ex:"XETRA",tp:"Automotive",au:"Authorized",sec:"Automotive",ceo:"Oliver Zipse",hq:"Munich, Germany",yr:1916},
+{t:"VOW3",n:"Volkswagen AG",r1:3.2,r2:0.063,p:50100000,pr:108.25,ex:"XETRA",tp:"Automotive",au:"Pending Review",sec:"Automotive",ceo:"Oliver Blume",hq:"Wolfsburg, Germany",yr:1937},
+{t:"ADS",n:"adidas AG",r1:4.0,r2:0.035,p:18800000,pr:222.10,ex:"XETRA",tp:"Consumer",au:"Authorized",sec:"Sportswear",ceo:"Bjorn Gulden",hq:"Herzogenaurach, Germany",yr:1949},
+{t:"MUV2",n:"Munich Re",r1:4.4,r2:0.022,p:13900000,pr:445.60,ex:"XETRA",tp:"Insurance",au:"Authorized",sec:"Reinsurance",ceo:"Joachim Wenning",hq:"Munich, Germany",yr:1880},
+// Euronext Paris (CAC)
+{t:"MC",n:"LVMH Moet Hennessy",r1:4.6,r2:0.020,p:50200000,pr:742.80,ex:"Euronext",tp:"Consumer",au:"Authorized",sec:"Luxury Goods",ceo:"Bernard Arnault",hq:"Paris, France",yr:1987},
+{t:"OR",n:"L'Oreal S.A.",r1:4.4,r2:0.025,p:53700000,pr:392.50,ex:"Euronext",tp:"Consumer",au:"Authorized",sec:"Cosmetics",ceo:"Nicolas Hieronimus",hq:"Clichy, France",yr:1909},
+{t:"TTE",n:"TotalEnergies SE",r1:3.9,r2:0.041,p:238500000,pr:58.72,ex:"Euronext",tp:"Energy",au:"Authorized",sec:"Oil & Gas",ceo:"Patrick Pouyanne",hq:"Courbevoie, France",yr:1924},
+{t:"SAN",n:"Sanofi S.A.",r1:4.2,r2:0.029,p:125000000,pr:98.45,ex:"Euronext",tp:"Pharmaceutical",au:"Authorized",sec:"Pharmaceuticals",ceo:"Paul Hudson",hq:"Paris, France",yr:2004},
+{t:"AI",n:"Air Liquide S.A.",r1:4.3,r2:0.027,p:46900000,pr:175.20,ex:"Euronext",tp:"Industrial",au:"Authorized",sec:"Industrial Gases",ceo:"Francois Jackow",hq:"Paris, France",yr:1902},
+{t:"BNP",n:"BNP Paribas S.A.",r1:3.8,r2:0.044,p:124800000,pr:64.35,ex:"Euronext",tp:"Investment Bank",au:"Authorized",sec:"Banking",ceo:"Jean-Laurent Bonnafe",hq:"Paris, France",yr:2000},
+// HKEX
+{t:"0700",n:"Tencent Holdings Ltd.",r1:4.4,r2:0.026,p:956000000,pr:388.40,ex:"HKEX",tp:"Technology",au:"Authorized",sec:"Internet & Gaming",ceo:"Pony Ma",hq:"Shenzhen, China",yr:1998},
+{t:"9988",n:"Alibaba Group Holding",r1:3.7,r2:0.047,p:2040000000,pr:82.15,ex:"HKEX",tp:"Technology",au:"Authorized",sec:"E-Commerce",ceo:"Eddie Wu",hq:"Hangzhou, China",yr:1999},
+{t:"0941",n:"China Mobile Ltd.",r1:4.0,r2:0.038,p:2140000000,pr:72.80,ex:"HKEX",tp:"Telecommunications",au:"Authorized",sec:"Telecom",ceo:"Dong Xin",hq:"Hong Kong",yr:1997},
+{t:"1299",n:"AIA Group Ltd.",r1:4.3,r2:0.028,p:1210000000,pr:62.45,ex:"HKEX",tp:"Insurance",au:"Authorized",sec:"Life Insurance",ceo:"Lee Yuan Siong",hq:"Hong Kong",yr:2010},
+// TSE (Tokyo)
+{t:"7203",n:"Toyota Motor Corporation",r1:4.5,r2:0.023,p:1630000000,pr:2845,ex:"TSE",tp:"Automotive",au:"Authorized",sec:"Automotive",ceo:"Koji Sato",hq:"Toyota City, Japan",yr:1937},
+{t:"6758",n:"Sony Group Corporation",r1:4.3,r2:0.028,p:126400000,pr:13420,ex:"TSE",tp:"Technology",au:"Authorized",sec:"Electronics & Entertainment",ceo:"Kenichiro Yoshida",hq:"Tokyo, Japan",yr:1946},
+{t:"6861",n:"Keyence Corporation",r1:4.6,r2:0.019,p:24300000,pr:62500,ex:"TSE",tp:"Technology",au:"Authorized",sec:"Sensors & Automation",ceo:"Takemitsu Takizaki",hq:"Osaka, Japan",yr:1974},
+{t:"8306",n:"Mitsubishi UFJ Financial",r1:3.9,r2:0.040,p:1280000000,pr:1625,ex:"TSE",tp:"Investment Bank",au:"Authorized",sec:"Banking",ceo:"Hironori Kamezawa",hq:"Tokyo, Japan",yr:2001}
+];
+
+DATA.forEach(d=>{d.g=rGrade(d.r1)});
+
+const PER_PAGE=25;
+let filtered=[];let currentPage=1;
+let currentSort={key:"num",dir:"asc"};let currentExchange="ALL";
+
+function gradeHTML(g){return`<span class="grade ${rClass(g)}">${g}</span>`}
+function fmtParts(n){if(n>=1e9)return(n/1e9).toFixed(1)+"B";if(n>=1e6)return(n/1e6).toFixed(1)+"M";if(n>=1e3)return(n/1e3).toFixed(1)+"K";return n}
+function fmtPrice(p,ex){
+  if(ex==="TSE")return"¥"+p.toLocaleString("en-GB");
+  if(ex==="HKEX")return"HK$"+p.toLocaleString("en-GB",{minimumFractionDigits:2});
+  if(ex==="LSE")return"£"+p.toLocaleString("en-GB",{minimumFractionDigits:2});
+  if(ex==="XETRA"||ex==="Euronext"||ex==="OMXH")return"€"+p.toLocaleString("en-GB",{minimumFractionDigits:2});
+  return"$"+p.toLocaleString("en-GB",{minimumFractionDigits:2})
+}
+function authHTML(a){
+  if(a==="Authorized")return'<span class="auth-ok">Authorized</span>';
+  if(a==="Pending Review")return'<span class="auth-pend">Pending</span>';
+  return'<span class="auth-rev">Revoked</span>';
+}
+
+function applyFilters(){
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  filtered=DATA.filter(d=>{
+    if(currentExchange!=="ALL"&&d.ex!==currentExchange)return false;
+    if(q&&!d.t.toLowerCase().includes(q)&&!d.n.toLowerCase().includes(q)&&!d.ex.toLowerCase().includes(q)&&!d.tp.toLowerCase().includes(q))return false;
+    return true;
+  });
+  sortData();currentPage=1;render();
+}
+
+function sortData(){
+  const k=currentSort.key;const dir=currentSort.dir==="asc"?1:-1;
+  filtered.sort((a,b)=>{
+    let va,vb;
+    if(k==="num"){va=DATA.indexOf(a);vb=DATA.indexOf(b)}
+    else if(k==="ticker"){va=a.t;vb=b.t}
+    else if(k==="name"){va=a.n;vb=b.n}
+    else if(k==="type"){va=a.tp;vb=b.tp}
+    else if(k==="grade"){va=a.g;vb=b.g}
+    else if(k==="rating1"){va=a.r1;vb=b.r1}
+    else if(k==="rating2"){va=a.r2;vb=b.r2}
+    else if(k==="parts"){va=a.p;vb=b.p}
+    else if(k==="price"){va=a.pr;vb=b.pr}
+    else if(k==="exchange"){va=a.ex;vb=b.ex}
+    else if(k==="auth"){va=a.au;vb=b.au}
+    else{va=0;vb=0}
+    if(typeof va==="string")return va.localeCompare(vb)*dir;
+    return(va-vb)*dir;
+  });
+}
+
+function render(){
+  const start=(currentPage-1)*PER_PAGE;
+  const page=filtered.slice(start,start+PER_PAGE);
+  const tbody=document.getElementById("tableBody");
+  tbody.innerHTML=page.map((d,i)=>{
+    const idx=start+i+1;
+    return`<tr onclick="openDetail(${DATA.indexOf(d)})">
+      <td>${idx}</td>
+      <td><span class="ticker">${d.t}</span></td>
+      <td class="corp-name">${d.n}</td>
+      <td><span class="type-tag">${d.tp}</span></td>
+      <td>${gradeHTML(d.g)}</td>
+      <td class="num-col">${d.r1.toFixed(1)}</td>
+      <td class="num-col">${d.r2.toFixed(3)}</td>
+      <td class="num-col">${fmtParts(d.p)}</td>
+      <td class="num-col">${fmtPrice(d.pr,d.ex)}</td>
+      <td><span class="exchange-tag">${d.ex}</span></td>
+      <td>${authHTML(d.au)}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("resultsCount").textContent=filtered.length+" of "+DATA.length+" listings";
+  updateStats();renderPagination();updateSortHeaders();
+}
+
+function updateStats(){
+  document.getElementById("totalListings").textContent=filtered.length;
+  const avg=filtered.length?filtered.reduce((s,d)=>s+d.r1,0)/filtered.length:0;
+  document.getElementById("avgRating").textContent=avg.toFixed(2);
+  document.getElementById("totalVolume").textContent=fmtParts(filtered.reduce((s,d)=>s+d.p,0));
+  document.getElementById("totalExchanges").textContent=new Set(filtered.map(d=>d.ex)).size;
+  document.getElementById("totalAuth").textContent=filtered.filter(d=>d.au==="Authorized").length;
+}
+
+function renderPagination(){
+  const total=Math.ceil(filtered.length/PER_PAGE);
+  const pg=document.getElementById("pagination");
+  if(total<=1){pg.innerHTML="";return}
+  let html=`<button ${currentPage===1?"disabled":""} onclick="goPage(${currentPage-1})">&laquo;</button>`;
+  for(let i=1;i<=total;i++)html+=`<button class="${i===currentPage?"active":""}" onclick="goPage(${i})">${i}</button>`;
+  html+=`<button ${currentPage===total?"disabled":""} onclick="goPage(${currentPage+1})">&raquo;</button>`;
+  pg.innerHTML=html;
+}
+function goPage(p){currentPage=p;render()}
+
+function updateSortHeaders(){
+  document.querySelectorAll("thead th").forEach(th=>{
+    th.classList.remove("sorted-asc","sorted-desc");
+    if(th.dataset.sort===currentSort.key)th.classList.add(currentSort.dir==="asc"?"sorted-asc":"sorted-desc");
+  });
+}
+
+document.querySelectorAll("thead th[data-sort]").forEach(th=>{
+  th.addEventListener("click",()=>{
+    const k=th.dataset.sort;
+    if(currentSort.key===k)currentSort.dir=currentSort.dir==="asc"?"desc":"asc";
+    else currentSort={key:k,dir:"asc"};
+    sortData();render();
+  });
+});
+
+document.querySelectorAll(".filter-btn[data-exchange]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    currentExchange=btn.dataset.exchange;
+    applyFilters();
+  });
+});
+
+document.getElementById("searchInput").addEventListener("input",applyFilters);
+document.getElementById("sortSelect").addEventListener("change",e=>{
+  const[k,d]=e.target.value.split("-");
+  currentSort={key:k,dir:d};sortData();render();
+});
+
+function openDetail(idx){
+  const d=DATA[idx];
+  document.getElementById("modalTitle").innerHTML=`<span class="ticker" style="margin-right:8px">${d.t}</span> ${d.n}`;
+  const pct=d.r1/5*100;
+  const gc=rClass(d.g);
+  document.getElementById("modalBody").innerHTML=`
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">Rating Grade</div>
+        <div class="value">${gradeHTML(d.g)} <span style="margin-left:8px;font-size:14px;color:var(--muted)">${d.g==="A"?"Excellent":d.g==="B"?"Good":d.g==="C"?"Fair":"Below Average"}</span></div>
+        <div class="detail-bar"><div class="detail-bar-fill ${gc}" style="width:${pct}%;background:${d.g==="A"?"#22c55e":d.g==="B"?"#3b82f6":d.g==="C"?"#eab308":"#ef4444"}"></div></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Authorization Status</div>
+        <div class="value">${authHTML(d.au)}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Math Rating</div>
+        <div class="value">${d.r1.toFixed(1)}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Academic Rating</div>
+        <div class="value">${d.r2.toFixed(3)}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Price</div>
+        <div class="value">${fmtPrice(d.pr,d.ex)}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Parts Outstanding</div>
+        <div class="value">${d.p.toLocaleString("en-GB")}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Exchange</div>
+        <div class="value"><span class="exchange-tag" style="font-size:13px;padding:4px 12px">${d.ex}</span></div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Entity Type</div>
+        <div class="value">${d.tp}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Sector</div>
+        <div class="value">${d.sec}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">CEO</div>
+        <div class="value">${d.ceo}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Headquarters</div>
+        <div class="value">${d.hq}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Founded</div>
+        <div class="value">${d.yr}</div>
+      </div>
+    </div>
+    <div class="detail-desc">
+      ${d.n} (${d.t}) is a${d.tp==="Insurance"||d.tp==="Industrial"||d.tp==="Investment Bank"?"n":""} ${d.tp.toLowerCase()} entity listed on the ${d.ex} exchange. Currently rated <strong>${d.g}</strong> with a math score of ${d.r1.toFixed(1)} and academic value of ${d.r2.toFixed(3)}. The entity operates in the ${d.sec.toLowerCase()} sector and is headquartered in ${d.hq}. Authorization status: <strong>${d.au}</strong>.
+    </div>
+  `;
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+
+function showView(v){
+  document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
+  event.target.classList.add("active");
+}
+
+function updateClock(){
+  document.getElementById("clock").textContent=new Date().toLocaleString("en-GB",{
+    weekday:"short",day:"2-digit",month:"short",year:"numeric",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
+  });
+}
+setInterval(updateClock,1000);updateClock();
+
+filtered=[...DATA];render();
+</script>
+</body>
+</html>
